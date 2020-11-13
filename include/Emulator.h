@@ -1,6 +1,5 @@
 #ifndef EMULATOR_H
 #define EMULATOR_H
-#include <SFML/Graphics.hpp>
 #include <chrono>
 
 #include "CPU.h"
@@ -8,6 +7,7 @@
 #include "MainBus.h"
 #include "PictureBus.h"
 #include "Controller.h"
+#include "FrameBuffer.h"
 
 namespace sn
 {
@@ -37,9 +37,8 @@ namespace sn
 
         Controller m_controller1, m_controller2;
 
-        sf::RenderWindow m_window;
         VirtualScreen m_emulatorScreen;
-        float m_screenScale;
+        FrameBuffer m_framebuffer;
 
         TimePoint m_cycleTimer;
 

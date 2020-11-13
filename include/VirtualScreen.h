@@ -1,21 +1,22 @@
 #ifndef VIRTUALSCREEN_H
 #define VIRTUALSCREEN_H
-#include <SFML/Graphics.hpp>
+
+#include <stdint.h>
 
 namespace sn
 {
-    class VirtualScreen : public sf::Drawable
+    class VirtualScreen
     {
     public:
-        void create (unsigned int width, unsigned int height, float pixel_size, sf::Color color);
-        void setPixel (std::size_t x, std::size_t y, sf::Color color);
+        void create (unsigned int width, unsigned int height, uint32_t color);
+        void setPixel (unsigned x, unsigned y, uint32_t color);
+        uint32_t getPixel (unsigned x, unsigned y);
 
     private:
-        void draw(sf::RenderTarget& target, sf::RenderStates states) const;
-
-        sf::Vector2u m_screenSize;
-        float m_pixelSize; //virtual pixel size in real pixels
-        sf::VertexArray m_vertices;
+        unsigned height;
+        unsigned width;
+        uint32_t *buffer;
     };
 };
+
 #endif // VIRTUALSCREEN_H

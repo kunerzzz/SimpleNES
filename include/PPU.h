@@ -96,7 +96,7 @@ namespace sn
 
             Address m_dataAddrIncrement;
 
-            std::vector<std::vector<sf::Color>> m_pictureBuffer;
+            std::vector<std::vector<uint32_t>> m_pictureBuffer;
     };
 }
 
