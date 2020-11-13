@@ -30,6 +30,12 @@ namespace sn
             LOG(Error) << "setPixel position out of range." << std::endl;
             return 0;
         }
-        return buffer[y * width + x];
+
+        //transform uint32_t color from RGBA to ARGB;
+        uint32_t color_b = buffer[y * width + x];
+        uint32_t color_l = color_b >> 8;
+        color_l |= ((color_b << 24) & 0xff000000);
+
+        return color_l;
     }
 }
