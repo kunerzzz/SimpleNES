@@ -6,11 +6,24 @@
 #include <linux/fb.h>
 #include <sys/mman.h>
 #include <sys/ioctl.h>
+#include <linux/kd.h>
+#include <signal.h>
 #include <cstdlib>
 #include <vector>
 
 namespace sn
 {
+    void sigintHandler(int signum) {
+        LOG(Info) << "Receive SIGINT, exit gracefully" << std::endl;
+        int console_fd = open("/dev/console", O_RDWR);   
+        if(ioctl(console_fd, KDSETMODE, KD_TEXT)) {
+            LOG(Error) << "Can not set console mode to graphic" << errno << std::endl;
+            exit(1);
+        }
+        close(console_fd);
+        exit(0);
+    }
+
     void FrameBuffer::create(int w, int h) {
         char default_fbpath[] = "/dev/fb0";
 
@@ -37,6 +50,14 @@ namespace sn
             LOG(Error) << "Can not handle bits_per_pixel " << vinfo.bits_per_pixel << std::endl;
             exit(1);
         }
+
+        signal(SIGINT, &sigintHandler);
+        int console_fd = open("/dev/console", O_RDWR);   
+        if(ioctl(console_fd, KDSETMODE, KD_GRAPHICS)) {
+            LOG(Error) << "Can not set console mode to graphic" << errno << std::endl;
+            exit(1);
+        }
+        close(console_fd);
 
         fbWidth = vinfo.xres;
         fbHeight = vinfo.yres;
@@ -69,11 +90,11 @@ namespace sn
         fbmem = (uint32_t *)mmap(0, fbmem_size, PROT_READ | PROT_WRITE, MAP_SHARED, fbdev, 0);
         fbmem_off = (uint32_t *)malloc(fbmem_size);
 
-        LOG(Info) << "Init Frame Buffer: \n"
-                  << "Res: " << fbWidth << "x" << fbHeight << std::endl
-                  << "VRes: " << fbVWidth << "x" << fbVHeight << std::endl
-                  << "Original Image size: " << originalWidth << "x" << originalHeight << std::endl
-                  << "Scaled Image size: " << scaledWidth << "x" << scaledHeight << std::endl;   
+        LOG(Info) << "Init Frame Buffer: \n";
+        LOG(Info) << "Res: " << fbWidth << "x" << fbHeight << std::endl;
+        LOG(Info) << "VRes: " << fbVWidth << "x" << fbVHeight << std::endl;
+        LOG(Info) << "Original Image size: " << originalWidth << "x" << originalHeight << std::endl;
+        LOG(Info) << "Scaled Image size: " << scaledWidth << "x" << scaledHeight << std::endl;   
     }
 
     void FrameBuffer::draw(VirtualScreen &m_emulatorScreen) {
