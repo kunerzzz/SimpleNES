@@ -100,9 +100,9 @@ namespace sn
     FrameBuffer::~FrameBuffer() {
         int console_fd = open("/dev/console", O_RDWR);   
         if(ioctl(console_fd, KDSETMODE, KD_TEXT)) {
-            LOG(Error) << "Can not set console mode to text" << errno << std::endl;
+            LOG(Error) << "Can not set console mode to text " << errno << std::endl;
         }
         close(console_fd);
-        LOG(Info) << "Delete FrameBuffer" << std::endl;
+        // LOG(Info) << "Delete FrameBuffer" << std::endl;
     }
 }

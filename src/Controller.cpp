@@ -62,9 +62,8 @@ namespace sn
     }
 
     Controller::~Controller() {
-        LOG(Info) << "Delete controller in" << std::endl;
         if(inputHandler)
             inputHandler->unbind();
-        LOG(Info) << "Delete controller out" << std::endl;
+        // LOG(Info) << "Delete controller" << std::endl;
     }
 }
