@@ -2,12 +2,27 @@
 #include "Log.h"
 #include <string>
 #include <sstream>
+#include <signal.h>
 
 namespace sn
 {
     // void parseControllerConf(std::string filepath,
     //                         std::vector<sf::Keyboard::Key>& p1,
     //                         std::vector<sf::Keyboard::Key>& p2);
+    Emulator *p_emulator;
+
+    void exit_gracefully() {
+        LOG(Info) << "Exit gracefully" << std::endl;
+        if(p_emulator) {
+            p_emulator->cleanup();
+        }
+        exit(0);
+    }
+}
+
+void signal_handler(int sig) {
+    LOG(sn::Info) << "Received SIGINT" << std::endl;
+    sn::exit_gracefully();
 }
 
 int main(int argc, char** argv)
@@ -27,9 +42,12 @@ int main(int argc, char** argv)
     //Default keybindings
     std::vector<uint16_t> p1 {KEY_J, KEY_K, KEY_RIGHTSHIFT, KEY_ENTER,
                               KEY_W, KEY_S, KEY_A, KEY_D},
-                          p2 {KEY_NUMERIC_5, KEY_NUMERIC_6, KEY_NUMERIC_8, KEY_NUMERIC_9,
+                          p2 {KEY_KP5, KEY_KP6, KEY_KP8, KEY_KP9,
                               KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT};
     sn::Emulator emulator;
+    sn::p_emulator = &emulator;
+
+    signal(SIGINT, signal_handler);
 
     for (int i = 1; i < argc; ++i)
     {

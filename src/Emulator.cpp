@@ -70,13 +70,13 @@ namespace sn
         const char *input_dev_p1 = getenv("NES_CONTROLLER1");
         const char *input_dev_p2 = getenv("NES_CONTROLLER2");
 
-        if(input_dev_p1) {
+        if(input_dev_p1 && strlen(input_dev_p1)) {
             LOG(Info) << "Start controller 1 (dev path: " << input_dev_p1 << ")" << std::endl;
             m_controller1.create(input_dev_p1);
         }
-        if(input_dev_p2) {
+        if(input_dev_p2 && strlen(input_dev_p2)) {
             LOG(Info) << "Start controller 2 (dev path: " << input_dev_p2 << ")" << std::endl;
-            m_controller1.create(input_dev_p2);
+            m_controller2.create(input_dev_p2);
         }
 
         m_cycleTimer = std::chrono::high_resolution_clock::now();
@@ -193,6 +193,13 @@ namespace sn
     {
         m_controller1.setKeyBindings(p1);
         m_controller2.setKeyBindings(p2);
+    }
+
+    void Emulator::cleanup()
+    {
+        m_controller1.~Controller();
+        m_controller2.~Controller();
+        m_framebuffer.~FrameBuffer();
     }
 
 }

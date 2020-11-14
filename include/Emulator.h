@@ -25,6 +25,7 @@ namespace sn
         void setVideoHeight(int height);
         void setVideoScale(float scale);
         void setKeys(std::vector<uint16_t>& p1, std::vector<uint16_t>& p2);
+        void cleanup();
     private:
         void DMA(Byte page);
 

@@ -17,7 +17,7 @@ namespace sn
 
     void VirtualScreen::setPixel(unsigned x, unsigned y, uint32_t color)
     {
-        if(x < 0 || x >= width || y < 0 || y >= width) {
+        if(x >= width || y >= width) {
             LOG(Error) << "setPixel position out of range." << std::endl;
             return;
         }
@@ -26,7 +26,7 @@ namespace sn
 
     uint32_t VirtualScreen::getPixel(unsigned x, unsigned y)
     {
-        if(x < 0 || x >= width || y < 0 || y >= width) {
+        if(x >= width || y >= width) {
             LOG(Error) << "setPixel position out of range." << std::endl;
             return 0;
         }

@@ -11,6 +11,7 @@ namespace sn
     {
     public:
         Controller();
+        ~Controller();
         enum Buttons
         {
             A,
@@ -27,12 +28,12 @@ namespace sn
         void strobe(Byte b);
         Byte read();
         void setKeyBindings(const std::vector<uint16_t>& keys);
-        void create(const char *dev_path);
+        void create(std::string dev_path);
     private:
         bool m_strobe;
         unsigned int m_keyStates;
 
-        InputHandler inputHandler;
+        InputHandler *inputHandler;
         std::vector<uint16_t> m_keyBindings;
 //         sf::Keyboard::Key m_keyBindings[TotalButtons];
     };

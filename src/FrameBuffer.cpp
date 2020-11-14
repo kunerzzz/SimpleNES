@@ -7,23 +7,11 @@
 #include <sys/mman.h>
 #include <sys/ioctl.h>
 #include <linux/kd.h>
-#include <signal.h>
 #include <cstdlib>
 #include <vector>
 
 namespace sn
 {
-    void sigintHandler(int signum) {
-        LOG(Info) << "Receive SIGINT, exit gracefully" << std::endl;
-        int console_fd = open("/dev/console", O_RDWR);   
-        if(ioctl(console_fd, KDSETMODE, KD_TEXT)) {
-            LOG(Error) << "Can not set console mode to graphic" << errno << std::endl;
-            exit(1);
-        }
-        close(console_fd);
-        exit(0);
-    }
-
     void FrameBuffer::create(int w, int h) {
         char default_fbpath[] = "/dev/fb0";
 
@@ -37,25 +25,24 @@ namespace sn
         this->fbdev = open(fbpath, O_RDWR);
         if(this->fbdev < 0) {
             LOG(Error) << "Can not open fb device " << fbpath << "." << std::endl;
-            exit(1);
+            return;
         }
 
         struct fb_var_screeninfo vinfo;
         if(ioctl(fbdev, FBIOGET_VSCREENINFO, &vinfo)) {
             LOG(Error) << "Can not read vinfo." << std::endl;
-            exit(1);
+            return;
         }
 
         if(vinfo.bits_per_pixel != 32) {
             LOG(Error) << "Can not handle bits_per_pixel " << vinfo.bits_per_pixel << std::endl;
-            exit(1);
+            return;
         }
 
-        signal(SIGINT, &sigintHandler);
         int console_fd = open("/dev/console", O_RDWR);   
         if(ioctl(console_fd, KDSETMODE, KD_GRAPHICS)) {
             LOG(Error) << "Can not set console mode to graphic" << errno << std::endl;
-            exit(1);
+            return;
         }
         close(console_fd);
 
@@ -108,5 +95,14 @@ namespace sn
 
     void FrameBuffer::display() {
         memcpy(fbmem, fbmem_off, fbmem_size);
+    }
+
+    FrameBuffer::~FrameBuffer() {
+        int console_fd = open("/dev/console", O_RDWR);   
+        if(ioctl(console_fd, KDSETMODE, KD_TEXT)) {
+            LOG(Error) << "Can not set console mode to text" << errno << std::endl;
+        }
+        close(console_fd);
+        LOG(Info) << "Delete FrameBuffer" << std::endl;
     }
 }

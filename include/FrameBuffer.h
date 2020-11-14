@@ -13,6 +13,7 @@ namespace sn
         void create(int originalWidth, int originalHeight);
         void draw(VirtualScreen &m_emulatorScreen);
         void display();
+        ~FrameBuffer();
 
     private:
         int fbdev;
