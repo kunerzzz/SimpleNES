@@ -9,6 +9,7 @@
 #include <linux/kd.h>
 #include <cstdlib>
 #include <vector>
+#include <algorithm>
 
 namespace sn
 {
@@ -77,6 +78,10 @@ namespace sn
         fbmem = (uint32_t *)mmap(0, fbmem_size, PROT_READ | PROT_WRITE, MAP_SHARED, fbdev, 0);
         fbmem_off = (uint32_t *)malloc(fbmem_size);
 
+        #ifdef ENABLE_PERFORMANCE_REPORT
+        last_display_time = last_report_time = std::chrono::high_resolution_clock::now();
+        #endif
+
         LOG(Info) << "Init Frame Buffer: \n";
         LOG(Info) << "Res: " << fbWidth << "x" << fbHeight << std::endl;
         LOG(Info) << "VRes: " << fbVWidth << "x" << fbVHeight << std::endl;
@@ -94,6 +99,46 @@ namespace sn
     }
 
     void FrameBuffer::display() {
+        #ifdef ENABLE_PERFORMANCE_REPORT
+        TimePoint cur_time = std::chrono::high_resolution_clock::now();
+        std::chrono::milliseconds frame_cost = std::chrono::duration_cast<std::chrono::milliseconds>(cur_time - last_display_time);
+        std::chrono::milliseconds since_last_report = std::chrono::duration_cast<std::chrono::milliseconds>(cur_time - last_report_time);
+
+        recent_frame_costs.push_back(frame_cost);
+        if(recent_frame_costs.size() > RECORD_FRAMES) {
+            recent_frame_costs.pop_front();
+            if(since_last_report > REPORT_INTERVAL) {
+                
+                std::sort(recent_frame_costs.begin(), recent_frame_costs.end(), std::greater<std::chrono::milliseconds>());
+                int percent_1_pos = RECORD_FRAMES / 100;
+                int percent_5_pos = RECORD_FRAMES / 20;
+                int percent_10_pos = RECORD_FRAMES / 10;
+
+                long percent_1_val = recent_frame_costs[percent_1_pos].count();
+                long percent_5_val = recent_frame_costs[percent_5_pos].count();
+                long percent_10_val = recent_frame_costs[percent_10_pos].count();
+                
+                std::chrono::milliseconds sum = std::chrono::milliseconds(0);
+                for(std::chrono::milliseconds cost : recent_frame_costs) {
+                    sum += cost;
+                }
+
+                double avg_frame_rate = RECORD_FRAMES * 1000 / sum.count();
+
+
+                LOG(Info) << std::endl
+                        << "==========Performance Report==========" << std::endl
+                        << "Frame Rate (fps): " << avg_frame_rate << std::endl
+                        << "1% max Frame Cost (ms): " << percent_1_val << std::endl
+                        << "5% max Frame Cost (ms): " << percent_5_val << std::endl
+                        << "10% max Frame Cost (ms): " << percent_10_val << std::endl
+                        << "==================END=================" << std::endl;
+                last_report_time = cur_time;
+            }
+        }
+
+        last_display_time = cur_time;
+        #endif
         memcpy(fbmem, fbmem_off, fbmem_size);
     }
 

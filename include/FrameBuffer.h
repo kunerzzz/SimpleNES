@@ -2,11 +2,14 @@
 #define FRAMEBUFFER_H
 
 #include <stdint.h>
+#include <chrono>
+#include <deque>
 
 #include "VirtualScreen.h"
 
 namespace sn
 {
+    using TimePoint = std::chrono::high_resolution_clock::time_point;
     class FrameBuffer
     {
     public:
@@ -38,6 +41,15 @@ namespace sn
         int fbVHeight;
         int fbOffsetX;
         int fbOffsetY;
+
+        #ifdef ENABLE_PERFORMANCE_REPORT
+        //Performance data
+        const int RECORD_FRAMES = 200;
+        const std::chrono::milliseconds REPORT_INTERVAL = std::chrono::milliseconds(1000);
+        TimePoint last_display_time;
+        TimePoint last_report_time;
+        std::deque<std::chrono::milliseconds> recent_frame_costs;
+        #endif
 
         int getVMemOffset(int x, int y)
         {
