@@ -1,8 +1,8 @@
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
-#include <SFML/Window.hpp>
 #include <cstdint>
 #include <vector>
+#include "InputHandler.h"
 
 namespace sn
 {
@@ -26,12 +26,14 @@ namespace sn
 
         void strobe(Byte b);
         Byte read();
-        void setKeyBindings(const std::vector<sf::Keyboard::Key>& keys);
+        void setKeyBindings(const std::vector<uint16_t>& keys);
+        void create(const char *dev_path);
     private:
         bool m_strobe;
         unsigned int m_keyStates;
 
-        std::vector<sf::Keyboard::Key> m_keyBindings;
+        InputHandler inputHandler;
+        std::vector<uint16_t> m_keyBindings;
 //         sf::Keyboard::Key m_keyBindings[TotalButtons];
     };
 }

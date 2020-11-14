@@ -24,7 +24,7 @@ namespace sn
         void setVideoWidth(int width);
         void setVideoHeight(int height);
         void setVideoScale(float scale);
-        void setKeys(std::vector<sf::Keyboard::Key>& p1, std::vector<sf::Keyboard::Key>& p2);
+        void setKeys(std::vector<uint16_t>& p1, std::vector<uint16_t>& p2);
     private:
         void DMA(Byte page);
 

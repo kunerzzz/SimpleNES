@@ -67,6 +67,18 @@ namespace sn
         m_framebuffer.create(NESVideoWidth, NESVideoHeight);
         m_emulatorScreen.create(NESVideoWidth, NESVideoHeight, 0xffffff);
 
+        const char *input_dev_p1 = getenv("NES_CONTROLLER1");
+        const char *input_dev_p2 = getenv("NES_CONTROLLER2");
+
+        if(input_dev_p1) {
+            LOG(Info) << "Start controller 1 (dev path: " << input_dev_p1 << ")" << std::endl;
+            m_controller1.create(input_dev_p1);
+        }
+        if(input_dev_p2) {
+            LOG(Info) << "Start controller 2 (dev path: " << input_dev_p2 << ")" << std::endl;
+            m_controller1.create(input_dev_p2);
+        }
+
         m_cycleTimer = std::chrono::high_resolution_clock::now();
         m_elapsedTime = m_cycleTimer - m_cycleTimer;
 
@@ -143,8 +155,8 @@ namespace sn
             }
             else
             {
-                sf::sleep(sf::milliseconds(1000/60));
-                // std::this_thread::sleep_for(std::chrono::milliseconds(1000/60)); //1/60 second
+                // sf::sleep(sf::milliseconds(1000/60));
+                std::this_thread::sleep_for(std::chrono::milliseconds(1000/60)); //1/60 second
             }
         }
     }
@@ -177,7 +189,7 @@ namespace sn
         //           << int(NESVideoWidth * m_screenScale) << "x" << int(NESVideoHeight * m_screenScale) << std::endl;
     }
 
-    void Emulator::setKeys(std::vector<sf::Keyboard::Key>& p1, std::vector<sf::Keyboard::Key>& p2)
+    void Emulator::setKeys(std::vector<uint16_t>& p1, std::vector<uint16_t>& p2)
     {
         m_controller1.setKeyBindings(p1);
         m_controller2.setKeyBindings(p2);

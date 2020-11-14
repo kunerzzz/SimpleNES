@@ -5,9 +5,9 @@
 
 namespace sn
 {
-    void parseControllerConf(std::string filepath,
-                            std::vector<sf::Keyboard::Key>& p1,
-                            std::vector<sf::Keyboard::Key>& p2);
+    // void parseControllerConf(std::string filepath,
+    //                         std::vector<sf::Keyboard::Key>& p1,
+    //                         std::vector<sf::Keyboard::Key>& p2);
 }
 
 int main(int argc, char** argv)
@@ -25,10 +25,10 @@ int main(int argc, char** argv)
     std::string path;
 
     //Default keybindings
-    std::vector<sf::Keyboard::Key> p1 {sf::Keyboard::J, sf::Keyboard::K, sf::Keyboard::RShift, sf::Keyboard::Return,
-                                       sf::Keyboard::W, sf::Keyboard::S, sf::Keyboard::A, sf::Keyboard::D},
-                                   p2 {sf::Keyboard::Numpad5, sf::Keyboard::Numpad6, sf::Keyboard::Numpad8, sf::Keyboard::Numpad9,
-                                       sf::Keyboard::Up, sf::Keyboard::Down, sf::Keyboard::Left, sf::Keyboard::Right};
+    std::vector<uint16_t> p1 {KEY_J, KEY_K, KEY_RIGHTSHIFT, KEY_ENTER,
+                              KEY_W, KEY_S, KEY_A, KEY_D},
+                          p2 {KEY_NUMERIC_5, KEY_NUMERIC_6, KEY_NUMERIC_8, KEY_NUMERIC_9,
+                              KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT};
     sn::Emulator emulator;
 
     for (int i = 1; i < argc; ++i)
@@ -101,7 +101,7 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    sn::parseControllerConf("keybindings.conf", p1, p2);
+    // sn::parseControllerConf("keybindings.conf", p1, p2);
     emulator.setKeys(p1, p2);
     emulator.run(path);
     return 0;
