@@ -51,9 +51,10 @@ $ make -j4    #Replace 4 with however many cores you have to spare
 Running
 -----------------
 First set these environment variables:
-$FRAMEBUFFER (framebuffer device, default: /dev/fb0)
-$NES_CONTROLLER1 (Player1's input device, eg: /dev/input/event2)
-$NES_CONTROLLER2 (Player2's input device, eg: /dev/input/event2)
+
+ - $FRAMEBUFFER (framebuffer device, default: /dev/fb0)
+ - $NES_CONTROLLER1 (Player1's input device, eg: /dev/input/event2)
+ - $NES_CONTROLLER2 (Player2's input device, eg: /dev/input/event2)
 
 Then pass the path to a .nes image like
 
