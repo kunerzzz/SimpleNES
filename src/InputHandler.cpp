@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <linux/input.h>
+#include <signal.h>
 
 namespace sn
 {
@@ -19,6 +20,11 @@ namespace sn
             if(read(fd, &event, sizeof(event)) == sizeof(event)) {
                 if(event.type == EV_KEY) {
                     mutex->lock();
+
+                    //Escape key for test
+                    if(event.value && event.code == KEY_ESC)
+                        kill(0, SIGINT);
+
                     if(event.value) {
                         set->insert(event.code);
                     } else {
