@@ -7,6 +7,13 @@
 
 namespace sn
 {
+    void drawThread(FrameBuffer *fb, VirtualScreen *vs) {
+        while(1) {
+            fb->draw(*vs);
+            fb->display();
+        }
+    }
+
     Emulator::Emulator() :
         m_cpu(m_bus),
         m_ppu(m_pictureBus, m_emulatorScreen),
@@ -82,7 +89,7 @@ namespace sn
         m_cycleTimer = std::chrono::high_resolution_clock::now();
         m_elapsedTime = m_cycleTimer - m_cycleTimer;
 
-        bool focus = true, pause = false;
+        // bool focus = true, pause = false;
         // sf::Event event;
         // while (m_window.isOpen())
         // {
@@ -132,14 +139,17 @@ namespace sn
         //             Log::get().setLevel(CpuTrace);
         //         }
         //     }
+
+        // std::thread draw_t(drawThread, &m_framebuffer, &m_emulatorScreen);
+        // draw_t.detach();
+
         while(1) {
-            if (focus && !pause)
-            {
                 m_elapsedTime += std::chrono::high_resolution_clock::now() - m_cycleTimer;
                 m_cycleTimer = std::chrono::high_resolution_clock::now();
 
                 while (m_elapsedTime > m_cpuCycleDuration)
                 {
+                    // std::chrono::high_resolution_clock::time_point begin = std::chrono::high_resolution_clock::now();
                     //PPU
                     m_ppu.step();
                     m_ppu.step();
@@ -148,16 +158,13 @@ namespace sn
                     m_cpu.step();
 
                     m_elapsedTime -= m_cpuCycleDuration;
+                    // std::chrono::high_resolution_clock::time_point end = std::chrono::high_resolution_clock::now();
+                    // std::chrono::nanoseconds time_used = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);
+                    // printf("%d\n", time_used.count());
                 }
 
                 m_framebuffer.draw(m_emulatorScreen);
                 m_framebuffer.display();
-            }
-            else
-            {
-                // sf::sleep(sf::milliseconds(1000/60));
-                std::this_thread::sleep_for(std::chrono::milliseconds(1000/60)); //1/60 second
-            }
         }
     }
 
