@@ -42,8 +42,7 @@ namespace sn
 
         int console_fd = open("/dev/console", O_RDWR);   
         if(ioctl(console_fd, KDSETMODE, KD_GRAPHICS)) {
-            LOG(Error) << "Can not set console mode to graphic" << errno << std::endl;
-            return;
+            LOG(Error) << "Can not set console mode to graphic " << errno << std::endl;
         }
         close(console_fd);
 
