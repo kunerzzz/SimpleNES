@@ -78,7 +78,7 @@ namespace sn
         fbmem_off = (uint32_t *)malloc(fbmem_size);
 
         #ifdef ENABLE_PERFORMANCE_REPORT
-        last_display_time = last_report_time = std::chrono::high_resolution_clock::now();
+        last_display_time = last_report_time = std::chrono::steady_clock::now();
         #endif
 
         LOG(Info) << "Init Frame Buffer: \n";
@@ -99,7 +99,12 @@ namespace sn
 
     void FrameBuffer::display() {
         #ifdef ENABLE_PERFORMANCE_REPORT
-        TimePoint cur_time = std::chrono::high_resolution_clock::now();
+        TimePoint cur_time = std::chrono::steady_clock::now();
+        // static const int RECORD_FRAMES = 200;
+        // static const std::chrono::milliseconds REPORT_INTERVAL = std::chrono::milliseconds(1000);
+        // static TimePoint last_display_time;
+        // static TimePoint last_report_time;
+        // static std::deque<std::chrono::milliseconds> recent_frame_costs;
         std::chrono::milliseconds frame_cost = std::chrono::duration_cast<std::chrono::milliseconds>(cur_time - last_display_time);
         std::chrono::milliseconds since_last_report = std::chrono::duration_cast<std::chrono::milliseconds>(cur_time - last_report_time);
 
@@ -108,17 +113,18 @@ namespace sn
             recent_frame_costs.pop_front();
             if(since_last_report > REPORT_INTERVAL) {
                 
-                std::sort(recent_frame_costs.begin(), recent_frame_costs.end(), std::greater<std::chrono::milliseconds>());
+                auto temp = recent_frame_costs;
+                std::sort(temp.begin(), temp.end(), std::greater<std::chrono::milliseconds>());
                 int percent_1_pos = RECORD_FRAMES / 100;
                 int percent_5_pos = RECORD_FRAMES / 20;
                 int percent_10_pos = RECORD_FRAMES / 10;
 
-                long percent_1_val = recent_frame_costs[percent_1_pos].count();
-                long percent_5_val = recent_frame_costs[percent_5_pos].count();
-                long percent_10_val = recent_frame_costs[percent_10_pos].count();
+                long percent_1_val = temp[percent_1_pos].count();
+                long percent_5_val = temp[percent_5_pos].count();
+                long percent_10_val = temp[percent_10_pos].count();
                 
                 std::chrono::milliseconds sum = std::chrono::milliseconds(0);
-                for(std::chrono::milliseconds cost : recent_frame_costs) {
+                for(std::chrono::milliseconds cost : temp) {
                     sum += cost;
                 }
 
