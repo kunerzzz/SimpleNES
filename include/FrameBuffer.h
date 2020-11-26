@@ -15,6 +15,7 @@ namespace sn
     public:
         void create(int originalWidth, int originalHeight);
         void draw(VirtualScreen &m_emulatorScreen);
+        void drawWithoutScaling(uint32_t *buf);
         void display();
         ~FrameBuffer();
 

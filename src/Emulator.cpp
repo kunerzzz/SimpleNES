@@ -163,7 +163,8 @@ namespace sn
                     // printf("%d\n", time_used.count());
                 }
 
-                m_framebuffer.draw(m_emulatorScreen);
+                // m_framebuffer.draw(m_emulatorScreen);
+                m_framebuffer.drawWithoutScaling(m_emulatorScreen.rbuffer);
                 m_framebuffer.display();
         }
     }

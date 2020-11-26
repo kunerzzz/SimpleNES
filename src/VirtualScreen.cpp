@@ -23,7 +23,12 @@ namespace sn
             LOG(Error) << "setPixel position out of range." << std::endl;
             return;
         }
-        wbuffer[y * width + x] = color;
+
+        //transform uint32_t color from RGBA to ARGB;
+        uint32_t color_l = color >> 8;
+        color_l |= ((color << 24) & 0xff000000);
+
+        wbuffer[y * width + x] = color_l;
     }
 
     uint32_t VirtualScreen::getPixel(unsigned x, unsigned y)
@@ -33,12 +38,7 @@ namespace sn
             return 0;
         }
 
-        //transform uint32_t color from RGBA to ARGB;
-        uint32_t color_b = rbuffer[y * width + x];
-        uint32_t color_l = color_b >> 8;
-        color_l |= ((color_b << 24) & 0xff000000);
-
-        return color_l;
+        return rbuffer[y * width + x];
     }
 
     void VirtualScreen::finish() {

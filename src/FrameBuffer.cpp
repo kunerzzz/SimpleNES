@@ -97,6 +97,16 @@ namespace sn
             }
     }
 
+    void FrameBuffer::drawWithoutScaling(uint32_t *buffer) {
+        unsigned marginX = (fbWidth - originalWidth) / 2 + fbOffsetX;
+        unsigned marginY = (fbHeight - originalHeight) / 2 + fbOffsetY;
+        unsigned start = marginY * fbVWidth + marginX;
+        for(int i = 0;i < originalHeight;++i) {
+            memcpy(fbmem_off + start, buffer + i * originalWidth, sizeof(uint32_t) * originalWidth);
+            start += fbVWidth;
+        }
+    }
+
     void FrameBuffer::display() {
         #ifdef ENABLE_PERFORMANCE_REPORT
         TimePoint cur_time = std::chrono::steady_clock::now();
