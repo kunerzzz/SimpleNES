@@ -86,7 +86,7 @@ namespace sn
             m_controller2.create(input_dev_p2);
         }
 
-        m_cycleTimer = std::chrono::high_resolution_clock::now();
+        m_cycleTimer = std::chrono::steady_clock::now();
         m_elapsedTime = m_cycleTimer - m_cycleTimer;
 
         // bool focus = true, pause = false;
@@ -140,12 +140,12 @@ namespace sn
         //         }
         //     }
 
-        // std::thread draw_t(drawThread, &m_framebuffer, &m_emulatorScreen);
-        // draw_t.detach();
+        // std::thread *draw_t = new std::thread(drawThread, &m_framebuffer, &m_emulatorScreen);
+        // draw_t->detach();
 
         while(1) {
-                m_elapsedTime += std::chrono::high_resolution_clock::now() - m_cycleTimer;
-                m_cycleTimer = std::chrono::high_resolution_clock::now();
+                m_elapsedTime += std::chrono::steady_clock::now() - m_cycleTimer;
+                m_cycleTimer = std::chrono::steady_clock::now();
 
                 while (m_elapsedTime > m_cpuCycleDuration)
                 {

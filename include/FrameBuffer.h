@@ -9,7 +9,7 @@
 
 namespace sn
 {
-    using TimePoint = std::chrono::high_resolution_clock::time_point;
+    using TimePoint = std::chrono::steady_clock::time_point;
     class FrameBuffer
     {
     public:

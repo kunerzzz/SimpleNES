@@ -11,11 +11,13 @@ namespace sn
         void create (unsigned int width, unsigned int height, uint32_t color);
         void setPixel (unsigned x, unsigned y, uint32_t color);
         uint32_t getPixel (unsigned x, unsigned y);
+        void finish();
 
     private:
         unsigned height;
         unsigned width;
-        uint32_t *buffer;
+        uint32_t *wbuffer;
+        uint32_t *rbuffer;
     };
 };
 

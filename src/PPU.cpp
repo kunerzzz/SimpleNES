@@ -261,6 +261,7 @@ namespace sn
                             m_screen.setPixel(x, y, m_pictureBuffer[x][y]);
                         }
                     }
+                    // m_screen.finish();
 
                     //Should technically be done at first dot of VBlank, but this is close enough
 //                     m_vblank = true;
